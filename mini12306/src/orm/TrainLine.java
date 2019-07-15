@@ -1,4 +1,4 @@
-package ORM;
+package orm;
 
 
 public class TrainLine { 
@@ -7,7 +7,7 @@ public class TrainLine {
 	private String arrive_time;
 	private String start_time;
 	private int station_no;
-	private int addPrice;
+	
 	public String getTrain_no() {
 		return train_no;
 	}
@@ -37,12 +37,6 @@ public class TrainLine {
 	}
 	public void setStation_no(int i) {
 		this.station_no = i;
-	}
-	public int getAddPrice() {
-		return addPrice;
-	}
-	public void setAddPrice(int addPrice) {
-		this.addPrice = addPrice;
 	}
 	
 	

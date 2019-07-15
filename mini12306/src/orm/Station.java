@@ -1,10 +1,11 @@
-package ORM;
+package orm;
 
 public class Station {
 	private int count;
 	private String code;
 	private String name;
 	private String abb;
+	
 	public int getCount() {
 		return count;
 	}

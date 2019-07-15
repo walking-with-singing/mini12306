@@ -1,30 +1,24 @@
-package Test_Reptile;
+package testReptile;
 
 import java.io.IOException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.junit.Ignore;
 import org.junit.Test;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import Reptile.FetchData;
-import jdk.incubator.http.HttpHeaders;
 
-public class Test_FetchData {
+public class TestFetchData {
 	FetchData fd=new FetchData();
-	//@Test
+	@Ignore
+	@Test
 	public void testSetTrainnumAndSchedule() 
 	{
 		fd.setTrainnumAndSchedule("https://kyfw.12306.cn/otn/resources/js/query/train_list.js?scriptVersion=1.0");
@@ -34,17 +28,20 @@ public class Test_FetchData {
 	{
 		fd.setTrain("https://kyfw.12306.cn/otn/resources/js/query/train_list.js?scriptVersion=1.0");
 	}*/
-	//@Test
+	@Ignore
+	@Test
 	public void testSetStation()
 	{
 		fd.setStation("https://kyfw.12306.cn/otn/resources/js/framework/station_name.js");
 	}
-	//@Test
+	@Ignore
+	@Test
 	public void testSetTrainLine()
 	{
 		fd.setTrainLine("https://kyfw.12306.cn/otn/czxx/queryByTrainNo");
 	}
-	//@Test
+	@Ignore
+	@Test
 	public void test()
 	{
 		int[] str=new int[7];
@@ -53,11 +50,13 @@ public class Test_FetchData {
 			System.out.println(s);
 		}
 	}
-	//@Test
+	@Ignore
+	@Test
 	public void testSetTrainBasePrice()
 	{
 		fd.setTrainBasePrice("https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice");
 	}
+	@Ignore
 	@Test
 	public void testSetPrice()
 	{
@@ -71,7 +70,8 @@ public class Test_FetchData {
 			e.printStackTrace();
 		}
 	}
-	//@Test
+	@Ignore
+	@Test
 	public void testHttpHost()
 	{
 		CloseableHttpClient client=HttpClients.createDefault();

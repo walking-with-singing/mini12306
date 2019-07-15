@@ -1,4 +1,4 @@
-package DatabaseAccess;
+package databaseAccess;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -7,15 +7,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import ORM.Schedule;
-import ORM.Station;
-import ORM.Train;
-import ORM.TrainLine;
-import ORM.Trainnum;
+import orm.Schedule;
+import orm.Station;
+import orm.Train;
+import orm.TrainLine;
+import orm.Trainnum;
 
 public class DatabaseAccess {
 	
@@ -330,7 +329,6 @@ public class DatabaseAccess {
 				trainLine.setArrive_time(rs.getString(3));
 				trainLine.setStart_time(rs.getString(4));
 				trainLine.setStation_no(rs.getInt(5));
-				trainLine.setAddPrice(rs.getInt(6));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -379,29 +377,7 @@ public class DatabaseAccess {
 		}
 		return list;
 	}
-	//¶¨ÖÆ
-	public int update(String sql)
-	{
-		int uc=0;
-		try {
-			uc = statement.executeUpdate(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return uc;
-	}
-	public ResultSet select(String sql)
-	{
-		ResultSet rs=null;
-		try {
-			rs=statement.executeQuery(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return rs;
-	}
+
 	public List<Schedule> foeSetPrice()
 	{
 		List<Schedule> list=new ArrayList<>();

@@ -1,13 +1,10 @@
 package Reptile;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -15,7 +12,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -23,59 +19,56 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import Test_Reptile.FetchFreeIps_test;
 
 
 
 public class FetchFreeIps {
+	Logger logger=LogManager.getLogger();
 	FetchData fd;
 	public FetchFreeIps() {
 		fd=new FetchData();
 	}
-	public List<HttpHost> getProxys(String uri)
+	public List<HttpHost> getProxys()
 	{
+		String uri="http://www.xiladaili.com/gaoni/";
 		int len=uri.length();
 		List<HttpHost> list=new ArrayList<>();
-			/*
-			get.setURI(new URI("https://www.kuaidaili.com/free/"));
-			response=client.execute(get);
-			entity=response.getEntity();
-			System.out.println(EntityUtils.toString(entity,"UTF-8"));
-			*/
-			Document doc;
-			for(int i=2;i<3;i++)
+			Document doc = null;
+			for(int i=0;i<=0;i++)
 			{
 				uri=uri.substring(0,len);
-				uri+="inha/"+i+"/";
+				uri+=i+"/";
 				//获取proxy
-				String html=fd.getContent(uri);
-				doc = Jsoup.parse(html);
-				Elements table=doc.select("table.table-bordered");
+				//String html=fd.getContent(uri);
+				try {
+					doc = Jsoup.connect(uri).get();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Elements table=doc.select("table.fl-table");
 				Elements trs=table.select("tr");
 				for(Element tr:trs)
 				{
-					Elements tdip=tr.select("[data-title=\"IP\"]");
-					Elements tdpost=tr.select("[data-title=\"PORT\"]");
-					//System.out.println(tdip.text()+"\t"+tdpost.text());
-					String ip=tdip.text();
-					if(ip.length()==0)
+					Elements tds=tr.select("td");
+					if(tds.isEmpty())
 						continue;
-					int	port = Integer.valueOf(tdpost.text());
+					String text=tds.get(0).text();
+					String[] str=text.split(":");
+					String ip=str[0];
+					int	port = Integer.valueOf(str[1]);
 					HttpHost proxy=new HttpHost(ip,port);
 					list.add(proxy);
 				}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+	
 			}
 				
-			System.out.println("筛选前ip数："+list.size());	
+			logger.debug("筛选前ip数："+list.size());	
 			//筛选proxy
 			CloseableHttpClient client=HttpClients.createDefault();
-			HttpGet get=new HttpGet("https://www.baidu.com/");
+			HttpGet get=new HttpGet("http://www.kongfz.com/");
+			get.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0");
 			for(int i=0;i<list.size();i++)
 			{
 				HttpHost proxy=list.get(i);
@@ -83,20 +76,26 @@ public class FetchFreeIps {
 				get.setConfig(config);
 				try {
 					CloseableHttpResponse response=client.execute(get);
-					System.out.println("连接代理成功！请求状态码："+response.getStatusLine().getStatusCode());
+					logger.debug("连接代理成功！请求状态码："+response.getStatusLine().getStatusCode());
 					if(response.getStatusLine().getStatusCode()!=200)
 						list.remove(i--);
 					else
 					{
-						HttpEntity entity=response.getEntity();
-						System.out.println(EntityUtils.toString(entity,"UTF-8"));
+						logger.info("成功"+proxy);
+						//HttpEntity entity=response.getEntity();
+						//logger.debug(EntityUtils.toString(entity,"UTF-8"));
+						/*get.setURI(new URI("http://www.google.com.hk/"));
+						response=client.execute(get);
+						logger.debug("帆樯成功？！请求状态码："+response.getStatusLine().getStatusCode());
+						entity=response.getEntity();
+						logger.debug(EntityUtils.toString(entity,"UTF-8"));*/
 					}
 				} catch (ClientProtocolException e) {
 					System.out.println(0);
 					e.printStackTrace();
 				} catch (IOException e) {
 					list.remove(i--);					
-				}
+				} 
 			}
 
 			
@@ -104,3 +103,5 @@ public class FetchFreeIps {
 		return list;
 	}
 }
+//http://www.google.com.hk/
+//https://home.firefoxchina.cn/

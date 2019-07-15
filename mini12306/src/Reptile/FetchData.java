@@ -1,20 +1,12 @@
 package Reptile;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,10 +14,8 @@ import java.util.regex.Pattern;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -36,13 +26,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import DatabaseAccess.DatabaseAccess;
-import ORM.Schedule;
-import ORM.Station;
-import ORM.Train;
-import ORM.TrainLine;
-import ORM.Trainnum;
-import Regex.Regex;
+import databaseAccess.DatabaseAccess;
+import orm.Schedule;
+import orm.Station;
+import orm.TrainLine;
+import orm.Trainnum;
+import regex.Regex;
 
 public class FetchData {
 	private static final Logger logger=LogManager.getLogger();
@@ -52,16 +41,12 @@ public class FetchData {
 	HttpEntity entity=null;
 	DatabaseAccess dao;
 	int ex=6015;
-	List<HttpHost> ips=new ArrayList<>();
+	List<HttpHost> proxys=new ArrayList<>();
 	int temp=0;
 	public FetchData() {
 		dao=new DatabaseAccess();
 		client=HttpClients.createDefault();
 		get=new HttpGet();
-		ips.add(new HttpHost("219.159.38.207",56210));
-		ips.add(new HttpHost("200.192.156.24",30534));
-		ips.add(new HttpHost("118.250.3.42",8060));
-		ips.add(new HttpHost("186.167.50.19",44245));
 	}
 	
 	public String getContent(String uri)
@@ -71,24 +56,25 @@ public class FetchData {
 			get.setURI(new URI(uri));
 			get.setHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0");
 			response=client.execute(get);
-			logger.error(response.getStatusLine().getStatusCode());
-			while(response.getStatusLine().getStatusCode()!=200)
-			{
-				System.out.println(ex+"\t"+uri);
-				System.out.println(response.getStatusLine().getStatusCode()+"-----------403异常");
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				client=HttpClients.createDefault();
-				get=new HttpGet(uri);
-				RequestConfig requestConfig = RequestConfig.custom().setProxy(ips.get(temp++)).build();
-				get.setConfig(requestConfig);
-				System.out.println("成功更换到第"+temp+"个ip"+get.getConfig().getProxy());
-				response=client.execute(get);
-			}
+			logger.info(response.getStatusLine().getStatusCode());
+//			while(response.getStatusLine().getStatusCode()!=200)
+//			{
+//				System.out.println(ex+"\t"+uri);
+//				System.out.println(response.getStatusLine().getStatusCode()+"-----------403异常");
+//				try {
+//					Thread.sleep(5000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				client=HttpClients.createDefault();
+//				get=new HttpGet(uri);
+//				RequestConfig requestConfig = RequestConfig.custom().setProxy(proxys.get(temp++)).build();
+//				get.setConfig(requestConfig);
+//				System.out.println("成功更换到第"+temp+"个ip"+get.getConfig().getProxy());
+//				response=client.execute(get);
+//			}
+			
 			entity=response.getEntity();
 			content=EntityUtils.toString(entity,"UTF8");
 		} catch (ClientProtocolException e) {

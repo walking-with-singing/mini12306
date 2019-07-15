@@ -1,40 +1,38 @@
-package Test_Reptile;
+package testReptile;
 import static org.junit.Assert.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import DatabaseAccess.DatabaseAccess;
 import Reptile.FetchData;
 import Reptile.FetchFreeIps;
 
 
-public class FetchFreeIps_test {
-	Logger logger=LogManager.getLogger("myFile");
+public class TestFetchFreeIps {
+	Logger logger=LogManager.getLogger();
 	FetchData fd=new FetchData();
 	FetchFreeIps fip=new FetchFreeIps();
-	@Ignore
-	@Test(timeout=1000)
+	@Test
 	public void getProxys()
 	{
-		while(true);
+		List<HttpHost> list=fip.getProxys();
+		logger.debug("检测后可用ip数："+list.size());
+		for(HttpHost proxy:list)
+		{
+			logger.debug(proxy);
+		}
 	}
-	@Ignore
-	@Test
+	//@Test
 	public void test()
 	{
 		assertEquals(1,1);
 	}
-	@Test
+	//@Test
 	public void test2()
 	{
 		logger.trace("trace");

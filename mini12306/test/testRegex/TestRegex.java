@@ -1,14 +1,13 @@
-package Test_Regex;
+package testRegex;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
-import Regex.Regex;
-//import junit.framework.Assert;
+import regex.Regex;
 
-public class Test_Regex {
+public class TestRegex {
 	Regex r=new Regex();
 	
 	@Test

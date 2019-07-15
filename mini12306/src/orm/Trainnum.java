@@ -1,9 +1,10 @@
-package ORM;
+package orm;
 public class Trainnum {
 	private String code;
 	private String begin;
 	private String end;
 	private String train_no;
+	
 	public String getCode() {
 		return code;
 	}

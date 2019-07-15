@@ -1,10 +1,11 @@
-package ORM;
+package orm;
 
 import java.sql.Date;
 
 public class Schedule {
 	private String train_no;
 	private Date date;
+	
 	public String getTrain_no() {
 		return train_no;
 	}
