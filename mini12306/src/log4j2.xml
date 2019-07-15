@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="300">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%msg \t\t (%F:%L)%n" />
+        </Console>
+        <File name="myFile" fileName="logging/logging.txt">
+            <PatternLayout pattern="%msg  \t %d \t %level \t %t \t %l%n" />
+        </File>
+    </Appenders>
+    <Loggers>
+    	<logger name="myFile" level="trace" additivity="true">
+    		<AppenderRef ref="myFile"></AppenderRef>
+    	</logger>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
