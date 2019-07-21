@@ -2,7 +2,7 @@
 <Configuration status="warn" monitorInterval="300">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%msg \t\t (%F:%L)%n" />
+            <PatternLayout pattern="%msg \t\t (%F:%M:%L)%n" />
         </Console>
         <File name="myFile" fileName="logging/logging.txt">
             <PatternLayout pattern="%msg  \t %d \t %level \t %t \t %l%n" />

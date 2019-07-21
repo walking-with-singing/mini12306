@@ -14,27 +14,22 @@ import orm.Schedule;
 import orm.Station;
 import orm.Train;
 import orm.TrainLine;
+import orm.TrainMap;
 import orm.Trainnum;
 
 public class DatabaseAccess {
 	
-	Connection c;
-	
-	String sTrain="SELECT t1.*,t2.station_name,t2.arrive_time,t2.station_no,s.date FROM trainline t1 , trainline t2 , schedule s" + 
-			"where t1.train_no=t2.train_no and t1.train_no=s.train_no\r\n" + 
-			"and t1.station_name=?" + 
-			"and t2.station_name=?" + 
-			"and t1.station_no<t2.station_no" + 
-			"and date=?";
-	
-	
+	Connection c;	
 	//sql语句--插入
 	String insertIntoTrainnum="insert into trainnum values(?,?,?,?)";
 	String insertIntoTrain="insert into train  values(?,?,?,?,?,?,?,?,?,?,?,?)";
 	String inserIntoStation="insert into station values(?,?,?,?)";
 	String inserIntoTrainLine="insert into trainline values(?,?,?,?,?,?)";
 	String insertIntoSchedule="insert into schedule values(?,?)";
+	String insertIntoTrainMap="insert into trainmap values(?,?)";
 	//sql语句--查询
+	
+	String selectFronTrainMap="select * fron trainmap where train_no=?";
 	String selectFromTrain="select * from train where train_no=?";
 	String selectFromTrainnum="select * from trainnum where train_no=?";
 	String selectFromStation="select * from station where code=?";
@@ -52,6 +47,7 @@ public class DatabaseAccess {
 	PreparedStatement psIStation;
 	PreparedStatement psITrainLine;
 	PreparedStatement psISchedule;
+	PreparedStatement psITrainMap;
 	//ps--查询
 	PreparedStatement psSTrain;
 	PreparedStatement psSTrainnum;
@@ -62,6 +58,7 @@ public class DatabaseAccess {
 	PreparedStatement psSSchedule;
 	PreparedStatement psSSSubchedule;
 	PreparedStatement psForSetPrice;
+	PreparedStatement psSTrainMap;
 	//更新
 	PreparedStatement psUsetPrice;
 	//
@@ -81,6 +78,7 @@ public class DatabaseAccess {
 		        psIStation=c.prepareStatement(inserIntoStation);
 		        psITrainLine=c.prepareStatement(inserIntoTrainLine);
 		        psISchedule=c.prepareStatement(insertIntoSchedule);
+		        psITrainMap=c.prepareStatement(insertIntoTrainMap);
 		        //预编译--查询
 		        psSTrain=c.prepareStatement(selectFromTrain);
 		        psSTrainnum=c.prepareStatement(selectFromTrainnum);
@@ -91,6 +89,7 @@ public class DatabaseAccess {
 		        psSSchedule=c.prepareStatement(selectFromSchedule);
 		        psSSSubchedule=c.prepareStatement(selecSubtFronSchedule);
 		        psForSetPrice=c.prepareStatement(forSetPrice);
+		        psSTrainMap=c.prepareStatement(selectFronTrainMap);
 		        //预编译--更新
 		        psUsetPrice=c.prepareStatement(setPrice);
 		        //
@@ -199,6 +198,37 @@ public class DatabaseAccess {
 		}
 		return uc>0;
 	}
+	//向TrainMap插入数据
+	public void insertIntoTrainMap(String train_no,String name)
+	{
+		try {
+			psITrainMap.setString(1, train_no);
+			psITrainMap.setString(2, name);
+			psITrainMap.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	//查询trainmap
+	public TrainMap selectFormTrainMap(String train_no)
+	{
+		TrainMap trainMap=null;
+		try {
+			psSTrainMap.setString(1, train_no);
+			ResultSet rs=psSTrainMap.executeQuery();
+			if(rs.next())
+			{
+				trainMap=new TrainMap();
+				trainMap.setTrain_no(rs.getString(1));
+				trainMap.setName(rs.getString(2));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return trainMap;
+	}
 	//查询列车表（train）
  	public Train selectFormTrain(String train_no)
 	{
@@ -211,17 +241,17 @@ public class DatabaseAccess {
 			{
 				train=new Train();
 				train.setTrain_no(rs.getString(1));
-				train.setA9(rs.getDouble(2));
-				train.setP(rs.getDouble(3));
-				train.setM(rs.getDouble(4));
-				train.setO(rs.getDouble(5));
-				train.setA6(rs.getDouble(6));
-				train.setA4(rs.getDouble(7));
-				train.setA3(rs.getDouble(8));
-				train.setA2(rs.getDouble(9));
-				train.setA1(rs.getDouble(10));
-				train.setWZ(rs.getDouble(11));
-				train.setMIN(rs.getDouble(12));
+				train.setA9(rs.getInt(2));
+				train.setP(rs.getInt(3));
+				train.setM(rs.getInt(4));
+				train.setO(rs.getInt(5));
+				train.setA6(rs.getInt(6));
+				train.setA4(rs.getInt(7));
+				train.setA3(rs.getInt(8));
+				train.setA2(rs.getInt(9));
+				train.setA1(rs.getInt(10));
+				train.setWZ(rs.getInt(11));
+				train.setMIN(rs.getInt(12));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
