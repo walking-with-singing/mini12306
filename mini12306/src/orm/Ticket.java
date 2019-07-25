@@ -10,14 +10,42 @@ public class Ticket {
 	private String code; 
 	private Date date;
 	private String from_station_name;
+	private int from_station_no;
 	private Time from_arrive_time;
 	private Time from_start_time;
 	private String to_station_name;
+	private int to_station_no;
 	private Time to_arrive_time;
 	private String seat_type;
 	private double price;
+	private int carriage_no;
+	private int seat_no;
 	
 	
+	public int getCarriage_no() {
+		return carriage_no;
+	}
+	public void setCarriage_no(int carriage_no) {
+		this.carriage_no = carriage_no;
+	}
+	public int getSeat_no() {
+		return seat_no;
+	}
+	public void setSeat_no(int seat_no) {
+		this.seat_no = seat_no;
+	}
+	public int getFrom_station_no() {
+		return from_station_no;
+	}
+	public void setFrom_station_no(int from_station_no) {
+		this.from_station_no = from_station_no;
+	}
+	public int getTo_station_no() {
+		return to_station_no;
+	}
+	public void setTo_station_no(int to_station_no) {
+		this.to_station_no = to_station_no;
+	}
 	public long getOrder_time() {
 		return order_time;
 	}

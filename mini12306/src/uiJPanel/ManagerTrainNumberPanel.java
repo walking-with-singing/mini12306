@@ -3,13 +3,9 @@ package uiJPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,14 +20,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellEditor;
 
-import org.jdesktop.swingx.JXDatePicker;
 
 import orm.Schedule;
 import orm.TimeAndPrice;
@@ -39,15 +30,14 @@ import orm.Train;
 import uiTable.AdaptSchedule;
 import uiTable.AdaptTimeAndPrice;
 import uiTable.AdaptTrain;
-import uiTable.Airline;
 import uiTable.MyTableModel;
-import uiTable.QueryTableModel;
 import uiTable.ScheduleTableModel;
 import uiTable.TimeAndPriceTableModel;
 import uiTable.TrainTableModel;
 
 
 public class ManagerTrainNumberPanel extends MyPanel {
+	int timeAndPriceTableSize=0;
 	JLabel trainSize=new JLabel("共0条记录");
 	JLabel timeAndPriceSize=new JLabel("共0条记录");
 	JLabel scheduleSize=new JLabel("共0条记录");
@@ -57,6 +47,7 @@ public class ManagerTrainNumberPanel extends MyPanel {
 	JRadioButton query=new JRadioButton("查看指定车次");
 	JRadioButton update=new JRadioButton("修改");
 	JRadioButton add=new JRadioButton("添加");
+	JRadioButton remove=new JRadioButton("删除");
 	ButtonGroup buttonGroup=new ButtonGroup();
 	JPanel center=new JPanel();
 	Set<Integer> TrainEditedIndexs=new HashSet<>();
@@ -87,6 +78,7 @@ public class ManagerTrainNumberPanel extends MyPanel {
 		buttonGroup.add(query);
 		buttonGroup.add(update);
 		buttonGroup.add(add);
+		buttonGroup.add(remove);
 		addListener();
 		//table.setModel(arg0);
 	}
@@ -100,6 +92,7 @@ public class ManagerTrainNumberPanel extends MyPanel {
 		panel.add(query);
 		panel.add(update);
 		panel.add(add);
+		panel.add(remove);
 		panel.add(submit);
 		return panel;
 	}
@@ -115,7 +108,7 @@ public class ManagerTrainNumberPanel extends MyPanel {
 		center.add(trainSize,gc);
 		gc.weighty=0.5;
 		center.add(jspTrain,gc);
-		gc.weighty=0.0;
+		gc.weighty=0.2;
 		center.add(timeAndPriceSize,gc);
 		gc.weighty=5;
 		center.add(jspTimeAndPrice,gc);
@@ -147,6 +140,10 @@ public class ManagerTrainNumberPanel extends MyPanel {
 				else if(add.isSelected())
 				{
 					submitAdd();
+				}
+				else if(remove.isSelected())
+				{
+					submitRemove();
 				}
 			}
 			
@@ -183,51 +180,36 @@ public class ManagerTrainNumberPanel extends MyPanel {
 				selectAdd();
 			}
 		});
-		mTrain.addTableModelListener(new TableModelListener() {
+		remove.addActionListener(new ActionListener() {
 			
 			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				selectRemove();
+			}
+		});
+		
+		mTrain.addTableModelListener(new TableModelListener() {		
+			@Override
 			public void tableChanged(TableModelEvent e) {
-				int row=tTrain.getEditingRow();
-				logger.debug("tTrain表格章第"+row+"行被修改。");
-				if(row>=0)
-					TrainEditedIndexs.add(row);
-				if(add.isSelected())
-				{
-					String train_no=(String) mTrain.getValueAt(row, 0);
-					String code= (String) mTrain.getValueAt(row, 1);
-					for(int i=0;i<mTimeAndPrice.getTableDatas().size();i++)
-					{
-						if(train_no!=null)
-							mTimeAndPrice.setValueAt(train_no, i, 0);
-					}
-					for(int i=0;i<mSchedule.getTableDatas().size();i++)
-					{
-						if(train_no!=null)
-							mSchedule.setValueAt(train_no, i, 0);
-					}
-				}
+				updateTrain();
 			}
 		});
 		mTimeAndPrice.addTableModelListener(new TableModelListener() {
 			
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				int row=tTimeAndPrice.getEditingRow();
-				logger.debug("tTimeAndPrice表格章第"+row+"行被修改。");	
-				if(row>=0)
-					TimeAndPriceEditedIndexs.add(row);
+				updateTimeAndPrice();
 			}
 		});
 		mSchedule.addTableModelListener(new TableModelListener() {
 			
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				int row=tSchedule.getEditingRow();
-				logger.debug("tSchedule表格章第"+row+"行被修改。");
-				if(row>=0)
-					ScheduleEditedIndexs.add(row);
+				updateSchedule();
 			}
 		});
+		
 	}
 	private void submitQueryAll()
 	{
@@ -261,7 +243,7 @@ public class ManagerTrainNumberPanel extends MyPanel {
 	{
 		if(dao.beginTransactionModel())
 		{
-			boolean flage=false;
+			boolean flage=true;
 			for(int i:TrainEditedIndexs)
 			{
 				logger.debug("TrainEditedIndexs:"+i);
@@ -271,16 +253,26 @@ public class ManagerTrainNumberPanel extends MyPanel {
 				if(!flage)
 					break;
 			}
-			
-			for(int i:TimeAndPriceEditedIndexs)
+			if(flage)
 			{
-				TimeAndPrice timeAndPrice=((AdaptTimeAndPrice)mTimeAndPrice.getTableDatas().get(i)).getTimeAndPrice();
-				if(timeAndPrice.getTrain_no()!=null&&timeAndPrice.getStation_no()!=0)
-					flage=dao.updateTimeAndPrice(timeAndPrice);
-				if(!flage)
-					break;
+				for(int i:TimeAndPriceEditedIndexs)
+				{
+					TimeAndPrice timeAndPrice=((AdaptTimeAndPrice)mTimeAndPrice.getTableDatas().get(i)).getTimeAndPrice();
+					if(timeAndPrice.getTrain_no()!=null&&timeAndPrice.getStation_no()!=0)
+					{
+						if(timeAndPrice.getStation_no()<=timeAndPriceTableSize)
+						{
+							flage=dao.updateTimeAndPrice(timeAndPrice);
+						}
+						else
+						{
+							flage=dao.saveTimeAndPrice(timeAndPrice);
+						}
+					}
+					if(!flage)
+						break;
+				}
 			}
-					
 			if(flage&&dao.commit())
 			{
 				JOptionPane.showMessageDialog(center, "数据修改成功！");
@@ -298,38 +290,52 @@ public class ManagerTrainNumberPanel extends MyPanel {
 	}
 	private void submitAdd()
 	{
+		Train train=((AdaptTrain)mTrain.getTableDatas().get(0)).getTrain();
+		if(train.getTrain_no()==null)
+		{
+			JOptionPane.showMessageDialog(center, "列车完整编号不能为空。");
+			return;
+		}
 		if(dao.beginTransactionModel())
 		{
-			boolean flage=false;
-			for(int i:TrainEditedIndexs)
+			boolean flage=dao.saveTrain(train);
+			if(flage)
 			{
-				logger.debug("TrainEditedIndexs:"+i);
-				Train train=((AdaptTrain)mTrain.getTableDatas().get(i)).getTrain();
-				if(train.getTrain_no()!=null)
-					flage=dao.saveTrain(train);
-				if(!flage)
-					break;
+				for(int i:TimeAndPriceEditedIndexs)
+				{
+					TimeAndPrice timeAndPrice=((AdaptTimeAndPrice)mTimeAndPrice.getTableDatas().get(i)).getTimeAndPrice();
+					if(timeAndPrice.getTrain_no()!=null&&timeAndPrice.getStation_no()!=0)
+						flage=dao.saveTimeAndPrice(timeAndPrice);
+					if(!flage)
+						break;
+				}
 			}
-			
-			for(int i:TimeAndPriceEditedIndexs)
+
+			if(flage)
 			{
-				TimeAndPrice timeAndPrice=((AdaptTimeAndPrice)mTimeAndPrice.getTableDatas().get(i)).getTimeAndPrice();
-				if(timeAndPrice.getTrain_no()!=null&&timeAndPrice.getStation_no()!=0)
-					flage=dao.saveTimeAndPrice(timeAndPrice);
-				if(!flage)
-					break;
+				for(int i:ScheduleEditedIndexs)
+				{
+					logger.debug("ScheduleEditedIndexs:"+i);
+					Schedule schedule=((AdaptSchedule)mSchedule.getTableDatas().get(i)).getSchedule();
+					if(schedule.getTrain_no()!=null&&schedule.getDate()!=null)
+						flage=dao.saveSchedule(schedule);
+					if(!flage)
+						break;
+				}
 			}
-			
-			for(int i:ScheduleEditedIndexs)
+			if(flage)
 			{
-				logger.debug("ScheduleEditedIndexs:"+i);
-				Schedule schedule=((AdaptSchedule)mSchedule.getTableDatas().get(i)).getSchedule();
-				if(schedule.getTrain_no()!=null&&schedule.getDate()!=null)
-					flage=dao.saveSchedule(schedule);
-				if(!flage)
-					break;
+				List<Schedule> schedules=dao.getSchedule(train.getTrain_no());
+				List<TimeAndPrice> timeAndPrices=dao.getTimeAndPrices(train.getTrain_no());
+				for(Schedule schedule:schedules)
+					for(TimeAndPrice timeAndPrice:timeAndPrices)
+					{
+						flage=dao.addRemainingseats(train, schedule, timeAndPrice);
+						if(!flage)
+							break;
+					}
 			}
-			
+
 			if(flage&&dao.commit())
 			{
 				JOptionPane.showMessageDialog(center, "数据保存成功！");
@@ -343,6 +349,19 @@ public class ManagerTrainNumberPanel extends MyPanel {
 				JOptionPane.showMessageDialog(center, "数据保存失败，请稍后重试。");
 			}
 			dao.endTransactionModel();
+		}
+
+	}
+	private void submitRemove()
+	{
+		int op=JOptionPane.showConfirmDialog(center, "该操作无法撤销，确定要删除该车次及其相关信息吗？");
+		if(op==JOptionPane.OK_OPTION)
+		{
+			String train_no=iTrain_no.getText();
+			if(dao.deleteTrain(train_no))
+				JOptionPane.showMessageDialog(center, "删除成功！");
+			else
+				JOptionPane.showMessageDialog(center, "删除失败。");
 		}
 
 	}
@@ -394,11 +413,71 @@ public class ManagerTrainNumberPanel extends MyPanel {
 		tSchedule.updateUI();
 		updateLabelSize();
 	}
+	private void selectRemove() {
+		logger.debug("selectRemove");
+		iTrain_no.setEditable(true);
+		submit.setText("删除");
+		//清空三个表格
+		mTrain.getTableDatas().clear();
+		mTimeAndPrice.getTableDatas().clear();
+		mSchedule.getTableDatas().clear();
+		//刷新
+		tTrain.updateUI();
+		tTimeAndPrice.updateUI();
+		tSchedule.updateUI();
+		updateLabelSize();
+	}
+	private void updateTrain()
+	{
+		int row=tTrain.getEditingRow();
+		logger.debug("tTrain表格章第"+row+"行被修改。");
+		if(row>=0)
+			TrainEditedIndexs.add(row);
+		if(add.isSelected())
+		{
+			String train_no=(String) mTrain.getValueAt(row, 0);
+			for(int i=0;i<mTimeAndPrice.getTableDatas().size();i++)
+			{
+				if(train_no!=null)
+					mTimeAndPrice.setValueAt(train_no, i, 0);
+			}
+			for(int i=0;i<mSchedule.getTableDatas().size();i++)
+			{
+				if(train_no!=null)
+					mSchedule.setValueAt(train_no, i, 0);
+			}
+		}
+	}
+	private void updateTimeAndPrice()
+	{
+		int row=tTimeAndPrice.getEditingRow();
+		logger.debug("tTimeAndPrice表格章第"+row+"行被修改。");	
+		if(row>=0)
+			TimeAndPriceEditedIndexs.add(row);
+		if(row==mTimeAndPrice.getTableDatas().size()-1)
+		{
+			mTimeAndPrice.getTableDatas().add(new AdaptTimeAndPrice(new TimeAndPrice()));
+			tTimeAndPrice.updateUI();
+		}
+	}
+	private void updateSchedule() 
+	{
+		int row=tSchedule.getEditingRow();
+		logger.debug("tSchedule表格章第"+row+"行被修改。");
+		if(row>=0)
+			ScheduleEditedIndexs.add(row);
+		if(row==mSchedule.getTableDatas().size()-1)
+		{
+			mSchedule.getTableDatas().add(new AdaptSchedule(new Schedule()));
+			tSchedule.updateUI();
+		}
+	}
 	private void updateLabelSize()
 	{
 		int size=mTrain.getTableDatas().size();
 		String str1="共"+size+"条记录";
 		size=mTimeAndPrice.getTableDatas().size();
+		timeAndPriceTableSize=size;
 		String str2="共"+size+"条记录";
 		size=mSchedule.getTableDatas().size();
 		String str3="共"+size+"条记录";

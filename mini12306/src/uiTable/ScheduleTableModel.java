@@ -1,15 +1,10 @@
 package uiTable;
 
 import java.sql.Date;
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.event.TableModelListener;
 
-import orm.AvailableTrain;
 import orm.Schedule;
-import orm.TimeAndPrice;
 
 public class ScheduleTableModel extends MyTableModel{
 	/**
@@ -29,19 +24,29 @@ public class ScheduleTableModel extends MyTableModel{
 	public void setValueAt(Object obj, int row, int column) {
 		Schedule Schedule= ((AdaptSchedule)tableDatas.get(row)).getSchedule();
 		String data=(String)obj;
+		Date date = null;
+		try {
+			if(column==1)
+				date=Date.valueOf(data);
+		} catch (NumberFormatException e) {
+			return;
+		} catch (IllegalArgumentException e)
+		{
+			return;
+		}
 		switch(column)
 		{
 			case 0:
 				Schedule.setTrain_no(data);
 				break;
 			case 1:
-				Schedule.setDate(Date.valueOf(data));
+				Schedule.setDate(date);
 				break;
 		}
         fireTableCellUpdated(row, column);
 	}
 	@Override
-	public void setTableDatas(List datas) {
+	public void setTableDatas(List<?> datas) {
 		tableDatas.clear();
 		for(Object sche:datas)
 		{

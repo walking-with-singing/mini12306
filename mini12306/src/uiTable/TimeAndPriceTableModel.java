@@ -1,12 +1,9 @@
 package uiTable;
 
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 
-import orm.AvailableTrain;
 import orm.TimeAndPrice;
-import orm.Train;
 
 public class TimeAndPriceTableModel extends MyTableModel {
 	/**
@@ -27,6 +24,19 @@ public class TimeAndPriceTableModel extends MyTableModel {
 		super.setValueAt(obj, row, column);
 		TimeAndPrice timeAndPrice= ((AdaptTimeAndPrice)tableDatas.get(row)).getTimeAndPrice();
 		String data=(String)obj;
+		Time time = null;
+		int price = 0;
+		try {
+			if(column==3||column==4)
+				time=Time.valueOf(data);
+			else if(column>=5)
+				price=Integer.valueOf(data);
+		} catch (NumberFormatException e) {
+			return;
+		} catch (IllegalArgumentException e)
+		{
+			return;
+		}
 		switch(column)
 		{
 			case 0:
@@ -39,50 +49,50 @@ public class TimeAndPriceTableModel extends MyTableModel {
 				timeAndPrice.setStation_name(data);
 				break;
 			case 3:
-				timeAndPrice.setArrive_time(Time.valueOf(data));
+				timeAndPrice.setArrive_time(time);
 				break;
 			case 4:
-				timeAndPrice.setStart_time(Time.valueOf(data));
+				timeAndPrice.setStart_time(time);
 				break;
 				
 			case 5:
-				timeAndPrice.setA9(Integer.valueOf(data));				
+				timeAndPrice.setA9(price);				
 				break;
 			case 6:
-				timeAndPrice.setP(Integer.valueOf(data));
+				timeAndPrice.setP(price);
 				break;
 			case 7:
-				timeAndPrice.setM(Integer.valueOf(data));
+				timeAndPrice.setM(price);
 				break;
 			case 8:
-				timeAndPrice.setO(Integer.valueOf(data));
+				timeAndPrice.setO(price);
 				break;
 			case 9:
-				timeAndPrice.setA6(Integer.valueOf(data));
+				timeAndPrice.setA6(price);
 				break;
 			case 10:
-				timeAndPrice.setA4(Integer.valueOf(data));
+				timeAndPrice.setA4(price);
 				break;
 			case 11:
-				timeAndPrice.setA3(Integer.valueOf(data));
+				timeAndPrice.setA3(price);
 				break;
 			case 12:
-				timeAndPrice.setA2(Integer.valueOf(data));
+				timeAndPrice.setA2(price);
 				break;
 			case 13:
-				timeAndPrice.setA1(Integer.valueOf(data));
+				timeAndPrice.setA1(price);
 				break;
 			case 14:
-				timeAndPrice.setWZ(Integer.valueOf(data));
+				timeAndPrice.setWZ(price);
 				break;
 			case 15:
-				timeAndPrice.setMIN(Integer.valueOf(data));
+				timeAndPrice.setMIN(price);
 				break;
 		}
 		fireTableCellUpdated(row, column);
 	}
 	@Override
-	public void setTableDatas(List datas) {
+	public void setTableDatas(List<?> datas) {
 		tableDatas.clear();
 		for(Object timeAndPrice:datas)
 		{

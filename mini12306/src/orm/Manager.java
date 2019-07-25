@@ -1,13 +1,13 @@
 package orm;
 
-public class User {
-	private String name;
+public class Manager {
+	private int id;
 	private String password;
-	public String getName() {
-		return name;
+	public int getId() {
+		return id;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getPassword() {
 		return password;

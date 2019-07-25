@@ -8,7 +8,6 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import orm.AvailableTrain;
 
 public abstract class MyTableModel extends AbstractTableModel{
 	/**
@@ -18,13 +17,10 @@ public abstract class MyTableModel extends AbstractTableModel{
 	protected String[] columnNames= {};
 	protected List<TableData> tableDatas=new ArrayList<>();
 	protected Logger logger=LogManager.getLogger();
-	public MyTableModel() {
-		// TODO Auto-generated constructor stub
-	}
 	public MyTableModel(String[] columnNames) {
 		this.columnNames=columnNames;
 	}
-	public abstract void setTableDatas(List datas);
+	public abstract void setTableDatas(List<?> datas);
 	@Override
 	public int getColumnCount() {
 		return columnNames.length;

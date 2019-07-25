@@ -12,48 +12,41 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import databaseAccess.DAO;
-import orm.User;
-import uiJFrame.SignUp;
-import uiJFrame.UserHome;
+import orm.Manager;
+import uiJFrame.ManagerHome;
 
-public class SignInPanel extends MyPanel{
+public class ManagerSignInPanel extends MyPanel {
 	JPanel center=new JPanel();
-	JTextField name=new JTextField(20);
+	JTextField id_input=new JTextField(20);
 	JPasswordField password=new JPasswordField(20);
 	JButton submit=new JButton("登录");
-	JButton signUp=new JButton("注册");
 	//获取屏幕分辨率
 	private final Dimension dScreen=Toolkit.getDefaultToolkit().getScreenSize();
 	private final int screenWidth=dScreen.width;
 	private final int screenHeight=dScreen.height;
 	//Tool
 	private DAO dao=new DAO();
-	private Logger logger=LogManager.getLogger();
-	public SignInPanel() {
-		addListener();
+	public ManagerSignInPanel() {
+		 addListener();
 	}
 	@Override
 	public JPanel getCenter() {
 		center.setLayout(null);
-		JLabel tname =new JLabel("用户名：");
+		JLabel tid =new JLabel("管理员id：");
 		JLabel tpassword =new JLabel("密码：");
 		//设置绝对位置
-		tname.setBounds(screenWidth/100*45, screenHeight/100*30,screenWidth/100*15,screenHeight/100*3);
-		name.setBounds(screenWidth/100*50, screenHeight/100*30,screenWidth/100*15,screenHeight/100*3);
+		tid.setBounds(screenWidth/100*45, screenHeight/100*30,screenWidth/100*15,screenHeight/100*3);
+		id_input.setBounds(screenWidth/100*50, screenHeight/100*30,screenWidth/100*15,screenHeight/100*3);
 		tpassword.setBounds(screenWidth/100*45, screenHeight/100*35, screenWidth/100*15,screenHeight/100*3);
 		password.setBounds(screenWidth/100*50, screenHeight/100*35, screenWidth/100*15,screenHeight/100*3);
 		submit.setBounds(screenWidth/100*50, screenHeight/100*50, screenWidth/100*10,screenHeight/100*5);
-		signUp.setBounds(screenWidth/100*50,screenHeight/100*60,screenWidth/100*10,screenHeight/100*5);
-		center.add(tname);
-		center.add(name);
+		center.add(tid);
+		center.add(id_input);
 		center.add(tpassword);
 		center.add(password);
 		center.add(submit);
-		center.add(signUp);
 		return center;
 	}
 
@@ -65,40 +58,31 @@ public class SignInPanel extends MyPanel{
 				submitSignIn();
 			}
 		});
-		signUp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				signUp();
-			}
-		});
+		
 	}
 	
 	private void submitSignIn()
 	{
 		
-		String name=this.name.getText();
+		int id=Integer.valueOf(id_input.getText());
 		String password=new String(this.password.getPassword());
-		User user=dao.getUser(name);
-		if(user==null)
+		Manager manager=dao.getManager(id);
+		if(manager==null)
 		{
-			JOptionPane.showMessageDialog(center,"用户“"+name+"”不存在!");
+			JOptionPane.showMessageDialog(center,"管理员“"+id+"”不存在!");
 			return;
 		}
-		String truePassword=user.getPassword();
+		String truePassword=manager.getPassword();
 		if(!password.equals(truePassword))
 		{
-			JOptionPane.showMessageDialog(center,"密码不正确，请重新输入。");
+			JOptionPane.showMessageDialog(center,"或密码不正确，请重新输入。");
 			return;
 		}
 		else 
 		{
-			new UserHome(user);
+			new ManagerHome(manager);
 			this.frame.dispose();
 		}		
 	}
 
-	private void signUp() {
-		logger.debug("注册");
-		new SignUp();
-	}
 }

@@ -23,7 +23,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import databaseAccess.DAO;
 import orm.AvailableTrain;
-import uiJFrame.OrderTicket;
+import orm.User;
 import uiJFrame.OrderTransferTicket;
 import uiTable.AdaptAvaTrain;
 import uiTable.AdaptTicketPrice;
@@ -32,6 +32,7 @@ import uiTable.QueryTableModel;
 import uiTable.TableData;
 
 public class QueryTransferPanel extends MyPanel {
+	User user;
 	JButton submit=new JButton("查询");
 	JTextField iFrom=new JTextField(20);
 	JTextField iTo=new JTextField(20);
@@ -44,15 +45,12 @@ public class QueryTransferPanel extends MyPanel {
 	//获取屏幕分辨率
 	private final Dimension dScreen=Toolkit.getDefaultToolkit().getScreenSize();
 	private final int width=dScreen.width;
-	private final int height=dScreen.height;
 	//Tool
 	private DAO dao=new DAO();
 	private Logger logger=LogManager.getLogger();
 	//构造方法
-	public QueryTransferPanel() {
-		iFrom.setText("包头");
-		iTo.setText("上海");
-		iMiddle.setText("济南");
+	public QueryTransferPanel(User user) {
+		this.user=user;
 		// 设置列宽度
         table.getColumnModel().getColumn(1).setPreferredWidth(width/10);
         table.getColumnModel().getColumn(2).setPreferredWidth(width/10);
@@ -189,7 +187,7 @@ public class QueryTransferPanel extends MyPanel {
 			}
 		}
 
-		new OrderTransferTicket(aTrain);
+		new OrderTransferTicket(aTrain,user);
 	}
 
 

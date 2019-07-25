@@ -22,15 +22,18 @@ public abstract class MyFrame extends JFrame{
 	private final Dimension dScreen=Toolkit.getDefaultToolkit().getScreenSize();
 	private final int width=dScreen.width;
 	private final int height=dScreen.height;
+	MyPanel myPanel;
 	public MyFrame(MyPanel myPanel) {
 		logger.info("width:"+width+"\theight:"+height);
+		this.myPanel=myPanel;
+		myPanel.setFrame(this);
 		//非全屏时尺寸和位置
 		this.setSize(width/2,height/2 );
 		this.setLocationRelativeTo(null);
 		//初始即全屏
 		this.setExtendedState(MAXIMIZED_BOTH);
 		//默认关闭窗口设置
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		//开始布局
 		this.setLayout(new BorderLayout());
 		this.add(myPanel.getNorth(),BorderLayout.NORTH);
@@ -38,7 +41,7 @@ public abstract class MyFrame extends JFrame{
 		this.add(myPanel.getWest(),BorderLayout.WEST);
 		this.add(myPanel.getEast(),BorderLayout.EAST);
 		this.add(myPanel.getCenter(),BorderLayout.CENTER);
-
+		this.setVisible(true);
 		
 	}
 	

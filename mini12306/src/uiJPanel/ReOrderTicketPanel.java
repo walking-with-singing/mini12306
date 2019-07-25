@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -16,26 +15,28 @@ import orm.Ticket;
 import orm.TicketPrice;
 import orm.User;
 
-public class OrderTicketPanel extends MyPanel{
+public class ReOrderTicketPanel extends MyPanel {
 	User user;
 	AvailableTrain aTrain;
 	TicketPrice ticketPrice;
 	JPanel center=new JPanel();
 	JComboBox<String> seatTypes=new JComboBox<>();
-	JButton submit=new JButton("æäº¤è®¢å•");
-	public OrderTicketPanel(AvailableTrain aTrain,User user) {
-		this.user=user;
+	JButton submit=new JButton("Ìá½»¶©µ¥");
+	Ticket oldTicket;
+	public ReOrderTicketPanel(AvailableTrain aTrain,Ticket ticket,User user) {
 		this.aTrain=aTrain;
-		ticketPrice=aTrain.getTicketPrice();
+		this.oldTicket=ticket;
+		this.ticketPrice=aTrain.getTicketPrice();
+		this.user=user;
 		addListener();
 	}
 	@Override
 	public JPanel getNorth() {
 		JPanel panel =new JPanel();
-		String message=aTrain.getDate()+"\t"+aTrain.getCode()+"æ¬¡\t"
-				+aTrain.getFrom_station_name()+"ç«™ï¼ˆ"+aTrain.getFrom_start_time()+"å¼€)"
-				+"----"+aTrain.getTo_station_name()+"ç«™ï¼ˆ"+aTrain.getTo_arrive_time()+"åˆ°)";
-		String warn="æ¸©é¦¨æç¤ºï¼šåŒä¸€ç”¨æˆ·åŒä¸€ä¹˜è½¦æ—¥æœŸåŒä¸€è½¦æ¬¡åªèƒ½è´­ä¹°ä¸€å¼ è½¦ç¥¨ã€‚";
+		String message=aTrain.getDate()+"\t"+aTrain.getCode()+"´Î\t"
+				+aTrain.getFrom_station_name()+"Õ¾£¨"+aTrain.getFrom_start_time()+"¿ª)"
+				+"----"+aTrain.getTo_station_name()+"Õ¾£¨"+aTrain.getTo_arrive_time()+"µ½)";
+		String warn="ÎÂÜ°ÌáÊ¾£ºÍ¬Ò»ÓÃ»§Í¬Ò»³Ë³µÈÕÆÚÍ¬Ò»³µ´ÎÖ»ÄÜ¹ºÂòÒ»ÕÅ³µÆ±¡£";
 		JLabel lable1=new JLabel(message);
 		JLabel lable2=new JLabel(warn);
 		panel.add(lable1);
@@ -44,30 +45,30 @@ public class OrderTicketPanel extends MyPanel{
 	}
 	@Override
 	public JPanel getCenter() {
-//		"å•†åŠ¡åº§", "ç‰¹ç­‰åº§", "ä¸€ç­‰åº§", "äºŒç­‰åº§", "é«˜çº§è½¯å§", "è½¯å§", "ç¡¬å§", "è½¯åº§", "ç¡¬åº§", "æ— åº§", "å…¶ä»–","å¤‡æ³¨"
+//		"ÉÌÎñ×ù", "ÌØµÈ×ù", "Ò»µÈ×ù", "¶şµÈ×ù", "¸ß¼¶ÈíÎÔ", "ÈíÎÔ", "Ó²ÎÔ", "Èí×ù", "Ó²×ù", "ÎŞ×ù", "ÆäËû","±¸×¢"
 		if(ticketPrice.getA9()!=0)
-			seatTypes.addItem("å•†åŠ¡åº§ ("+ticketPrice.getA9()+")");
+			seatTypes.addItem("ÉÌÎñ×ù ("+ticketPrice.getA9()+")");
 		if(ticketPrice.getP()!=0)
-			seatTypes.addItem("ç‰¹ç­‰åº§ ("+ticketPrice.getP()+")");
+			seatTypes.addItem("ÌØµÈ×ù ("+ticketPrice.getP()+")");
 		if(ticketPrice.getM()!=0)
-			seatTypes.addItem("ä¸€ç­‰åº§ ("+ticketPrice.getM()+")");
+			seatTypes.addItem("Ò»µÈ×ù ("+ticketPrice.getM()+")");
 		if(ticketPrice.getO()!=0)
-			seatTypes.addItem("äºŒç­‰åº§ ("+ticketPrice.getO()+")");
+			seatTypes.addItem("¶şµÈ×ù ("+ticketPrice.getO()+")");
 		if(ticketPrice.getA6()!=0)
-			seatTypes.addItem("é«˜çº§è½¯å§ ("+ticketPrice.getA6()+")");
+			seatTypes.addItem("¸ß¼¶ÈíÎÔ ("+ticketPrice.getA6()+")");
 		if(ticketPrice.getA4()!=0)
-			seatTypes.addItem("è½¯å§ ("+ticketPrice.getA4()+")");
+			seatTypes.addItem("ÈíÎÔ ("+ticketPrice.getA4()+")");
 		if(ticketPrice.getA3()!=0)
-			seatTypes.addItem("ç¡¬å§ ("+ticketPrice.getA3()+")");
+			seatTypes.addItem("Ó²ÎÔ ("+ticketPrice.getA3()+")");
 		if(ticketPrice.getA2()!=0)
-			seatTypes.addItem("è½¯åº§ ("+ticketPrice.getA2()+")");
+			seatTypes.addItem("Èí×ù ("+ticketPrice.getA2()+")");
 		if(ticketPrice.getA1()!=0)
-			seatTypes.addItem("ç¡¬åº§ ("+ticketPrice.getA1()+")");
+			seatTypes.addItem("Ó²×ù ("+ticketPrice.getA1()+")");
 		if(ticketPrice.getWZ()!=0)
-			seatTypes.addItem("æ— åº§ ("+ticketPrice.getWZ()+")");
+			seatTypes.addItem("ÎŞ×ù ("+ticketPrice.getWZ()+")");
 		if(ticketPrice.getMIN()!=0)
-			seatTypes.addItem("å…¶ä»– ("+ticketPrice.getMIN()+")");
-		JLabel setSeatType=new JLabel("å¸­åˆ«ï¼š");
+			seatTypes.addItem("ÆäËû ("+ticketPrice.getMIN()+")");
+		JLabel setSeatType=new JLabel("Ï¯±ğ£º");
 		center.add(setSeatType,BorderLayout.CENTER);
 		center.add(seatTypes,BorderLayout.CENTER);
 		return center;
@@ -89,8 +90,8 @@ public class OrderTicketPanel extends MyPanel{
 		});
 		
 	}
-	protected void submit()
-	{
+
+	protected void submit() {
 		Ticket ticket=new Ticket();
 		ticket.setOrder_time(System.currentTimeMillis());
 		ticket.setUser_name(user.getName());
@@ -116,25 +117,27 @@ public class OrderTicketPanel extends MyPanel{
 		ticket.setCarriage_no(carriageAndSeat_no[0]);
 		ticket.setSeat_no(carriageAndSeat_no[1]);
 		if(dao.beginTransactionModel())
-		{
+		{				
+			boolean delete=dao.deleteTicket(oldTicket)&&dao.updateRemainingseats(oldTicket, "+");
 			if(dao.getTicket(ticket.getUser_name(),ticket.getTrain_no(),ticket.getDate())==null)
 			{
-				if(dao.saveTicket(ticket)&&dao.updateRemainingseats(ticket,"-")&&dao.commit())
+				if(delete&&dao.saveTicket(ticket)&&dao.updateRemainingseats(ticket,"-")&&dao.commit())
 				{
-					JOptionPane.showMessageDialog(center, "é¢„å®šæˆåŠŸï¼");
+					JOptionPane.showMessageDialog(center, "¸ÄÇ©³É¹¦£¡");
 				}
 				else
 				{
 					dao.rollback();
-					JOptionPane.showMessageDialog(center, "é¢„å®šå¤±è´¥ï¼Œè¯·ç¨åé‡è¯•ã€‚");
+					JOptionPane.showMessageDialog(center, "¸ÄÇ©Ê§°Ü£¬ÇëÉÔºóÖØÊÔ¡£");
 				}
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(center, "é¢„å®šå¤±è´¥ï¼Œå½“è½¦æ¬¡è¯¥æ—¥æœŸæ‚¨å·²æœ‰é¢„å®šã€‚");
+				JOptionPane.showMessageDialog(center, "Ô¤¶¨Ê§°Ü£¬µ±³µ´Î¸ÃÈÕÆÚÄúÒÑÓĞÔ¤¶¨¡£");
 			}
 			dao.endTransactionModel();
 		}
 
 	}
+	
 }

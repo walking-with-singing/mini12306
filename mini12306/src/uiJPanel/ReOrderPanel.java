@@ -1,21 +1,17 @@
 package uiJPanel;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Date;
-import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.sql.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,21 +19,18 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import databaseAccess.DAO;
 import orm.AvailableTrain;
+import orm.Ticket;
 import orm.User;
-import uiJFrame.OrderTicket;
-import uiJFrame.QueryTransfer;
+import uiJFrame.ReOrderTicket;
 import uiTable.AdaptAvaTrain;
 import uiTable.AdaptTicketPrice;
 import uiTable.MyTableModel;
 import uiTable.QueryTableModel;
 
-public class QueryPanel extends MyPanel{
+public class ReOrderPanel extends MyPanel {
 	User user;
-	JButton submit=new JButton("查询");
-	JButton transfer=new JButton("接续换乘");
-	JTextField iFrom=new JTextField(20);
-	JTextField iTo=new JTextField(20);
-	JXDatePicker datepick = new JXDatePicker(new Date(System.currentTimeMillis()));
+	Ticket ticket;
+	JPanel center=new JPanel();
 	
 	MyTableModel tableModel=new QueryTableModel();
 	JTable table=new JTable(tableModel);
@@ -49,30 +42,16 @@ public class QueryPanel extends MyPanel{
 	private DAO dao=new DAO();
 	private Logger logger=LogManager.getLogger();
 	//构造方法
-	public QueryPanel(User user) {
+	public ReOrderPanel(Ticket ticket,User user) {
+		this.ticket=ticket;
 		this.user=user;
 		// 设置列宽度
         table.getColumnModel().getColumn(1).setPreferredWidth(width/10);
         table.getColumnModel().getColumn(2).setPreferredWidth(width/10);
-
-		addListener();
-	}
-	@Override
-	public JPanel getNorth() {
-		JPanel panel=new JPanel();
-//		panel.setLayout(new GridLayout(1,7));
-		JLabel tForm =new JLabel("出发地");
-		JLabel tTo =new JLabel("目的地");
-		JLabel tDate =new JLabel("目的地");
-		panel.add(tForm);
-		panel.add(iFrom);
-		panel.add(tTo);
-		panel.add(iTo);
-		panel.add(tDate);
-		panel.add(datepick);
-		panel.add(submit);
-		panel.add(transfer);
-		return panel;
+        JXDatePicker datepick = new JXDatePicker(new Date(System.currentTimeMillis()));
+        JOptionPane.showMessageDialog(center, datepick, "请选择乘车日期", 1);
+        tableModel.setTableDatas(dao.getAvailableTrains(ticket.getFrom_station_name(), ticket.getTo_station_name(),new Date(datepick.getDate().getTime())));
+        addListener();
 	}
 	@Override
 	public JPanel getCenter() {
@@ -84,18 +63,6 @@ public class QueryPanel extends MyPanel{
 
 	protected void addListener()
 	{
-		submit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				submitQuery();
-			}
-		});
-		transfer.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				 transfer();
-			}
-		});
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
 			@Override
@@ -126,19 +93,6 @@ public class QueryPanel extends MyPanel{
 			
 		});
 	}	
-	private void submitQuery()
-	{
-		String fromStation=iFrom.getText();
-		String toStation=iTo.getText();
-		Date date=new Date(datepick.getDate().getTime());
-		fromStation=fromStation+"%";
-		toStation=toStation+"%";
-		List<AvailableTrain> aTrains=dao.getAvailableTrains(fromStation, toStation, date);
-		for(AvailableTrain aTrain:aTrains)
-			dao.getReTickets(aTrain);
-		tableModel.setTableDatas(aTrains);
-		table.updateUI();	
-	}
 	private void showPrice(int row)
 	{
 		AvailableTrain aTrain=((AdaptAvaTrain)tableModel.getTableDatas().get(row)).getaTrain();
@@ -155,19 +109,13 @@ public class QueryPanel extends MyPanel{
 	}
 	private void order(int row)
 	{
-		logger.debug("预定："+row);
+		logger.debug("改签："+row);
 		AvailableTrain aTrain=((AdaptAvaTrain)tableModel.getTableDatas().get(row)).getaTrain();
 		if(aTrain.getTicketPrice()==null)
 		{
-			logger.debug("点预定时ticketPrice==null");
 			dao.getTicketPrice(aTrain);
-			if(aTrain.getTicketPrice()==null)
-				logger.debug("getTicketPrice失败");
 		}
-		new OrderTicket(aTrain,user);
+		new ReOrderTicket(aTrain,ticket,user);
 	}
-	private void transfer()
-	{
-		new QueryTransfer(user);
-	}
+	
 }

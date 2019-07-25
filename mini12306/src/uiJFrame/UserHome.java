@@ -1,16 +1,19 @@
 package uiJFrame;
 
-import uiJPanel.SignInPanel;
+import orm.User;
+import uiJPanel.UserHomePanel;
 
-public class SignIn extends MyFrame{
+public class UserHome extends MyFrame {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public SignIn() {
-		super(new SignInPanel());
+
+	public UserHome(User user) {
+		super(new UserHomePanel(user));
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
-	
+
 }

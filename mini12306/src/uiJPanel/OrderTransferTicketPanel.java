@@ -1,10 +1,8 @@
 package uiJPanel;
 
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,9 +17,11 @@ import databaseAccess.DAO;
 import orm.AvailableTrain;
 import orm.Ticket;
 import orm.TicketPrice;
+import orm.User;
 
 public class OrderTransferTicketPanel extends MyPanel {
 	AvailableTrain[] aTrain;
+	User user;
 	TicketPrice[] ticketPrice=new TicketPrice[2];
 	JPanel center=new JPanel();
 	JComboBox<String> seatTypes1=new JComboBox<>();
@@ -30,7 +30,8 @@ public class OrderTransferTicketPanel extends MyPanel {
 	//Tool
 	private DAO dao=new DAO();
 	private Logger logger=LogManager.getLogger();
-	public OrderTransferTicketPanel(AvailableTrain[] aTrain) {
+	public OrderTransferTicketPanel(AvailableTrain[] aTrain,User user) {
+		this.user=user;
 		this.aTrain=aTrain;
 		ticketPrice[0]=aTrain[0].getTicketPrice();
 		ticketPrice[1]=aTrain[1].getTicketPrice();
@@ -158,14 +159,16 @@ public class OrderTransferTicketPanel extends MyPanel {
 		//转站前车票
 		Ticket ticket1=new Ticket();
 		ticket1.setOrder_time(System.currentTimeMillis());
-		ticket1.setUser_name("白落提");
+		ticket1.setUser_name(user.getName());
 		ticket1.setTrain_no(aTrain[0].getTrain_no());
 		ticket1.setCode(aTrain[0].getCode());
 		ticket1.setDate(aTrain[0].getDate());
 		ticket1.setFrom_station_name(aTrain[0].getFrom_station_name());
+		ticket1.setFrom_station_no(aTrain[0].getFrom_station_no());
 		ticket1.setFrom_arrive_time(aTrain[0].getFrom_arrive_time());
 		ticket1.setFrom_start_time(aTrain[0].getFrom_start_time());
 		ticket1.setTo_station_name(aTrain[0].getTo_station_name());
+		ticket1.setTo_station_no(aTrain[0].getTo_station_no());
 		ticket1.setTo_arrive_time(aTrain[0].getTo_arrive_time());
 		String typeAndprice=(String) seatTypes1.getSelectedItem();
 		logger.debug("typeAndprice:"+typeAndprice);
@@ -175,17 +178,22 @@ public class OrderTransferTicketPanel extends MyPanel {
 		logger.debug("type:"+type+"\tprice:"+price);
 		ticket1.setSeat_type(type);
 		ticket1.setPrice(Double.valueOf(price));
+		int[] carriageAndSeat_no=dao.getCarriage(type, aTrain[0].getReTickets());
+		ticket1.setCarriage_no(carriageAndSeat_no[0]);
+		ticket1.setSeat_no(carriageAndSeat_no[1]);
 		//转站后车票
 		Ticket ticket2=new Ticket();
 		ticket2.setOrder_time(System.currentTimeMillis());
-		ticket2.setUser_name("白落提");
+		ticket2.setUser_name(user.getName());
 		ticket2.setTrain_no(aTrain[1].getTrain_no());
 		ticket2.setCode(aTrain[1].getCode());
 		ticket2.setDate(aTrain[1].getDate());
 		ticket2.setFrom_station_name(aTrain[1].getFrom_station_name());
+		ticket2.setFrom_station_no(aTrain[1].getFrom_station_no());
 		ticket2.setFrom_arrive_time(aTrain[1].getFrom_arrive_time());
 		ticket2.setFrom_start_time(aTrain[1].getFrom_start_time());
 		ticket2.setTo_station_name(aTrain[1].getTo_station_name());
+		ticket2.setTo_station_no(aTrain[1].getTo_station_no());
 		ticket2.setTo_arrive_time(aTrain[1].getTo_arrive_time());
 		String typeAndprice2=(String) seatTypes2.getSelectedItem();
 		logger.debug("typeAndprice:"+typeAndprice);
@@ -195,19 +203,20 @@ public class OrderTransferTicketPanel extends MyPanel {
 		logger.debug("type:"+type+"\tprice:"+price);
 		ticket2.setSeat_type(type2);
 		ticket2.setPrice(Double.valueOf(price2));
+		int[] carriageAndSeat_no2=dao.getCarriage(type2, aTrain[1].getReTickets());
+		ticket2.setCarriage_no(carriageAndSeat_no2[0]);
+		ticket2.setSeat_no(carriageAndSeat_no2[1]);
 		//事物模式尝试存
-		try {
-			dao.beginTransactionModel();
+		if(dao.beginTransactionModel())
+		{
 			if(dao.getTicket(ticket1.getUser_name(),ticket1.getTrain_no(),ticket1.getDate())==null)
 			{
 				if(dao.getTicket(ticket2.getUser_name(),ticket2.getTrain_no(),ticket2.getDate())==null)
 				{
-					logger.debug("ticket1\t:"+ticket1);
-					logger.debug("ticket2\t:"+ticket2);
-					if(dao.saveTicket(ticket1)&&dao.saveTicket(ticket2))
+					if(dao.saveTicket(ticket1)&&dao.updateRemainingseats(ticket1,"-")&&dao.saveTicket(ticket2)&&dao.updateRemainingseats(ticket2,"-")&&dao.commit())
 					{
 						JOptionPane.showMessageDialog(center, "预定成功！");
-						dao.commit();
+						
 					}
 					else
 					{
@@ -225,9 +234,14 @@ public class OrderTransferTicketPanel extends MyPanel {
 				JOptionPane.showMessageDialog(center, "预定失败，"+aTrain[0].getCode()+"车次该日期您已有预定。");
 			}
 			dao.endTransactionModel();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		else
+		{
+			JOptionPane.showMessageDialog(center, "事物模式开启失败");
+		}
+				
+	
+			
+
 	}
 }

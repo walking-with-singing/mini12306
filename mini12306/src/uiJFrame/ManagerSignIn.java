@@ -1,16 +1,17 @@
 package uiJFrame;
 
-import uiJPanel.SignInPanel;
+import uiJPanel.ManagerSignInPanel;
 
-public class SignIn extends MyFrame{
+public class ManagerSignIn extends MyFrame{
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public SignIn() {
-		super(new SignInPanel());
+
+	public ManagerSignIn() {
+		super(new ManagerSignInPanel());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setVisible(true);
 	}
 	
 }

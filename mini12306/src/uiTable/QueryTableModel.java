@@ -1,10 +1,7 @@
 package uiTable;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.table.AbstractTableModel;
 
 import orm.AvailableTrain;
 
@@ -18,7 +15,7 @@ public class QueryTableModel extends MyTableModel{
 		super(columnNames);
 	}
 	@Override
-	public void setTableDatas(List datas) {
+	public void setTableDatas(List<?> datas) {
 		tableDatas.clear();
 		for(Object aTrain:datas)
 		{
