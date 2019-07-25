@@ -388,6 +388,9 @@ public class ManagerTrainNumberPanel extends MyPanel {
 	}
 	private void selectUpdate()
 	{
+		TimeAndPriceEditedIndexs.clear();
+		TrainEditedIndexs.clear();
+		ScheduleEditedIndexs.clear();
 		logger.debug("update");
 		iTrain_no.setEditable(false);
 		submit.setText("ÐÞ¸Ä");
