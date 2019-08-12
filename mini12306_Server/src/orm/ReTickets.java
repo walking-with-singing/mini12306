@@ -1,6 +1,12 @@
 package orm;
 
-public class ReTickets {
+import java.io.Serializable;
+
+public class ReTickets implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int A9;
 	private int P;
 	private int M;

@@ -1,6 +1,12 @@
 package orm;
 
-public class TicketPrice {
+import java.io.Serializable;
+
+public class TicketPrice implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private double A9;
 	private double P;
 	private double M;

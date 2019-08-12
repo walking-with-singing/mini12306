@@ -1,6 +1,12 @@
 package orm;
 
-public class TrainMap {
+import java.io.Serializable;
+
+public class TrainMap implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String train_no;
 	private String name;
 	public String getTrain_no() {

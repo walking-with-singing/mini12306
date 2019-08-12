@@ -1,8 +1,13 @@
 package orm;
 
+import java.io.Serializable;
 import java.sql.Time;
 
-public class TimeAndPrice {
+public class TimeAndPrice implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String train_no;
 	private String station_name; 
 	private Time arrive_time;

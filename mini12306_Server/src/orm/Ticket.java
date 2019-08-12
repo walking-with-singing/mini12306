@@ -1,9 +1,14 @@
 package orm;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 
-public class Ticket {
+public class Ticket implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long order_time;
 	private String user_name;
 	private String train_no;

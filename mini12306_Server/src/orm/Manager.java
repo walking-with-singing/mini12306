@@ -1,6 +1,12 @@
 package orm;
 
-public class Manager {
+import java.io.Serializable;
+
+public class Manager implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String password;
 	public int getId() {

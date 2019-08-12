@@ -1,9 +1,14 @@
 package orm;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 
-public class AvailableTrain {
+public class AvailableTrain implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String code;
 	private String train_no;
 	private String from_station_name;

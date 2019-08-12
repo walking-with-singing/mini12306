@@ -1,7 +1,13 @@
 package orm;
 
-public class Price {
+import java.io.Serializable;
+
+public class Price implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String train_no;
 	private String station_no;
 	private double A9;

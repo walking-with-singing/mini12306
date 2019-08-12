@@ -1,6 +1,12 @@
 package orm;
 
-public class Train {
+import java.io.Serializable;
+
+public class Train implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String train_no;
 	private String code;
 	private int A9;
