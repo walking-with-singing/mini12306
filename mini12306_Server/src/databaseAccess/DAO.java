@@ -833,7 +833,7 @@ public class DAO {
 		}
 		return m;
 	}
-	public void getReTickets(AvailableTrain aTrain)
+	public AvailableTrain getReTickets(AvailableTrain aTrain)
 	{
 		try {
 			psGetReTicket.setString(1, aTrain.getTrain_no());
@@ -864,9 +864,11 @@ public class DAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return aTrain;
 	}
-	public void getTicketPrice(AvailableTrain aTrain)
+	public TicketPrice getTicketPrice(AvailableTrain aTrain)
 	{
+		TicketPrice ticketPrice=null;
 		try {
 			psGetTicketPrice.setString(1, aTrain.getTrain_no());
 			psGetTicketPrice.setString(2, aTrain.getTrain_no());
@@ -877,7 +879,7 @@ public class DAO {
 			if(rs.next())
 			{
 				logger.debug("RsTickets结果不为空");
-				TicketPrice ticketPrice=new TicketPrice();
+				ticketPrice=new TicketPrice();
 				ticketPrice.setA9(rs.getInt(1));
 				ticketPrice.setP(rs.getInt(2));
 				ticketPrice.setM(rs.getInt(3));
@@ -895,6 +897,7 @@ public class DAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return ticketPrice;
 	}
 	public User getUser(String name)
 	{
