@@ -28,9 +28,9 @@ public class Handler implements Runnable {
 	private ObjectOutputStream objectOutput;
 
 	public Handler(Socket socket) {
-		this.socket=socket;
+		this.socket = socket;
 		isRemoteAvailable = true;
-		try {			
+		try {
 			objectOutput = new ObjectOutputStream(socket.getOutputStream());
 			objectInput = new ObjectInputStream(socket.getInputStream());
 
@@ -76,7 +76,7 @@ public class Handler implements Runnable {
 		logger.trace("½øÈëhandlDatabase");
 		try {
 			String method = objectInput.readUTF();
-			logger.trace("method£º"+method);
+			logger.trace("method£º" + method);
 			switch (method) {
 			case "beginTransactionModel":
 				objectOutput.writeBoolean(dao.beginTransactionModel());
@@ -100,8 +100,8 @@ public class Handler implements Runnable {
 				objectOutput.writeBoolean(dao.deleteUser((User) objectInput.readObject()));
 				break;
 			case "updateRemainingseats":
-				objectOutput
-						.writeBoolean(dao.updateRemainingseats((Ticket) objectInput.readObject(), objectInput.readUTF()));
+				objectOutput.writeBoolean(
+						dao.updateRemainingseats((Ticket) objectInput.readObject(), objectInput.readUTF()));
 				break;
 			case "updateTrain":
 				objectOutput.writeBoolean(dao.updateTrain((Train) objectInput.readObject()));
@@ -171,8 +171,8 @@ public class Handler implements Runnable {
 				objectOutput.writeObject(dao.getReTickets((AvailableTrain) objectInput.readObject()));
 				break;
 			case "getTicketPrice":
-				TicketPrice price=dao.getTicketPrice((AvailableTrain) objectInput.readObject());
-				logger.trace("getTicketPrice"+price.getA9());
+				TicketPrice price = dao.getTicketPrice((AvailableTrain) objectInput.readObject());
+				logger.trace("getTicketPrice" + price.getA9());
 				objectOutput.writeObject(price);
 				break;
 			case "getUser":
@@ -198,6 +198,5 @@ public class Handler implements Runnable {
 			e.printStackTrace();
 		}
 	}
-
 
 }
