@@ -5,8 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -310,6 +308,7 @@ public class DAO {
 		return seatMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<User> getAllUser() {
 		List<User> list = new ArrayList<>();
 		try {
@@ -327,6 +326,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Ticket> getOrders(String user_name) {
 		List<Ticket> list = new ArrayList<>();
 		try {
@@ -345,6 +345,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Schedule> getSchedule(String train_no) {
 		List<Schedule> list = new ArrayList<>();
 		try {
@@ -381,6 +382,7 @@ public class DAO {
 		return train;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TimeAndPrice> getAllTimeAndPrices() {
 		List<TimeAndPrice> list = new ArrayList<>();
 		try {
@@ -398,6 +400,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TimeAndPrice> getTimeAndPrices(String train_no) {
 		List<TimeAndPrice> list = new ArrayList<>();
 		try {
@@ -416,6 +419,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<AvailableTrain> getSureMT(String mid, Date date, String fromStation, String toStation) {
 		List<AvailableTrain> list = new ArrayList<>();
 		try {
@@ -437,6 +441,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<AvailableTrain> getTransfer(String fromStation, String toStation, Date date) {
 		List<AvailableTrain> list = new ArrayList<>();
 		try {
@@ -457,6 +462,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<AvailableTrain> getAvailableTrains(String fromStation, String toStation, Date date) {
 		List<AvailableTrain> list = new ArrayList<>();
 		try {
@@ -477,6 +483,7 @@ public class DAO {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Ticket> getUserOrders(String user_name) {
 		List<Ticket> list = new ArrayList<>();
 		try {

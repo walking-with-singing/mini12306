@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import netToolset.Protocol;
 import netToolset.DAO;
 import uiJFrame.SignIn;
 
