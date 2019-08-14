@@ -26,5 +26,7 @@
 	<classpathentry kind="lib" path="lib/Jsoup/jsoup-1.11.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/Jsoup/jsoup-1.11.3.jar"/>
 	<classpathentry kind="lib" path="lib/JXDatePicker/swingx-core-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/ui/alloy.jar"/>
+	<classpathentry kind="lib" path="lib/ui/liquidlnf.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
